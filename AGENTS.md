@@ -46,6 +46,7 @@ The app fails to start if DATAMALL_API_KEY is missing.
 - App entrypoint and lifespan wiring: [app/main.py](app/main.py)
 - Settings and env loading: [app/core/config.py](app/core/config.py)
 - Upstream HTTP client wrapper: [app/services/lta_client.py](app/services/lta_client.py)
+- Valkey cache client wrapper: [app/services/cache.py](app/services/cache.py)
 - Bus API routes: [app/api/routes/bus.py](app/api/routes/bus.py)
 - Health routes: [app/api/routes/health.py](app/api/routes/health.py)
 - Container build: [Dockerfile](Dockerfile)
@@ -56,6 +57,7 @@ The app fails to start if DATAMALL_API_KEY is missing.
 - Keep endpoint namespace under /api/v1.
 - Preserve upstream query parameter names using aliases such as BusStopCode, ServiceNo, Date, and $skip.
 - Route handlers return upstream JSON payloads directly unless feature work requires transformation.
+- Keep cache reads/writes inside route helper flow; do not duplicate cache key logic across handlers.
 - Centralize outbound DataMall logic in [app/services/lta_client.py](app/services/lta_client.py), not inside routes.
 - Add new environment variables in [app/core/config.py](app/core/config.py) and document them in [.env.example](.env.example).
 

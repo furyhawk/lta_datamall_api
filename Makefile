@@ -10,7 +10,8 @@ COMPOSE_CMD:=$(shell if command -v podman >/dev/null 2>&1; then if podman compos
 .DEFAULT_GOAL := help
 
 .PHONY: help check-engine check-compose sync run dev prod compile clean \
-	image-build image-run image-stop compose-up compose-down compose-logs compose-ps
+	image-build image-run image-stop compose-up compose-down compose-logs compose-ps \
+	valkey-up valkey-down
 
 help:
 	@echo "Targets:"
@@ -27,6 +28,8 @@ help:
 	@echo "  compose-down Stop compose stack"
 	@echo "  compose-logs Follow compose logs"
 	@echo "  compose-ps   Show compose services"
+	@echo "  valkey-up    Start only Valkey service"
+	@echo "  valkey-down  Stop and remove only Valkey service"
 	@echo ""
 	@echo "Detected container engine: $(if $(CONTAINER_ENGINE),$(CONTAINER_ENGINE),none)"
 	@echo "Detected compose command: $(if $(COMPOSE_CMD),$(COMPOSE_CMD),none)"
@@ -84,3 +87,10 @@ compose-logs: check-compose
 
 compose-ps: check-compose
 	$(COMPOSE_CMD) ps
+
+valkey-up: check-compose
+	$(COMPOSE_CMD) up -d valkey
+
+valkey-down: check-compose
+	$(COMPOSE_CMD) stop valkey
+	$(COMPOSE_CMD) rm -f valkey

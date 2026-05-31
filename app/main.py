@@ -4,17 +4,22 @@ from fastapi import FastAPI
 
 from app.api.routes import bus, health
 from app.core.config import get_settings
+from app.services.cache import CacheClient
 from app.services.lta_client import LTAClient
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
-    client = LTAClient(settings)
-    await client.startup()
-    app.state.lta_client = client
+    lta_client = LTAClient(settings)
+    cache_client = CacheClient(settings)
+    await lta_client.startup()
+    await cache_client.startup()
+    app.state.lta_client = lta_client
+    app.state.cache_client = cache_client
     yield
-    await client.shutdown()
+    await lta_client.shutdown()
+    await cache_client.shutdown()
 
 
 def create_app() -> FastAPI:

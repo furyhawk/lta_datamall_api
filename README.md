@@ -5,6 +5,7 @@ FastAPI backend platform for LTA DataMall Bus Transport APIs, dockerized for pro
 ## Features
 
 - Async FastAPI service with shared `httpx` connection pool
+- Valkey caching layer with graceful fallback when cache is unavailable
 - Scalable runtime with Gunicorn + Uvicorn workers
 - API key loaded from `.env` (`DATAMALL_API_KEY`)
 - Bus Transport endpoints exposed under `/api/v1`
@@ -51,6 +52,25 @@ docker compose up --build -d
 curl http://localhost:8000/healthz
 ```
 
+The compose stack includes a Valkey service for caching.
+
+## Cache Configuration
+
+Set in `.env`:
+
+- `VALKEY_ENABLED=true`
+- `VALKEY_URL=redis://valkey:6379/0`
+- `VALKEY_CONNECT_TIMEOUT_SECONDS=1`
+- `VALKEY_DEFAULT_TTL_SECONDS=120`
+
+Current cache behavior:
+
+- Bus Arrival: 15s
+- Bus Services and Bus Routes: 300s
+- Bus Stops: 1800s
+- Planned Bus Routes: 900s
+- Passenger Volume endpoints: 21600s
+
 ## Makefile Tasks
 
 Use `make help` to see all targets. The Makefile auto-detects Podman first, then Docker.
@@ -63,6 +83,8 @@ make run
 make compile
 make compose-up
 make compose-down
+make valkey-up
+make valkey-down
 ```
 
 ## Horizontal Scaling

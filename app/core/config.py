@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     max_connections: int = 200
     max_keepalive_connections: int = 100
 
+    valkey_enabled: bool = True
+    valkey_url: str = "redis://valkey:6379/0"
+    valkey_connect_timeout_seconds: float = 1.0
+    valkey_default_ttl_seconds: int = 120
+
 
 @lru_cache
 def get_settings() -> Settings:
