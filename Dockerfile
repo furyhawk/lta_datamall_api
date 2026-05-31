@@ -19,4 +19,4 @@ COPY openapi.json ./openapi.json
 
 EXPOSE 8000
 
-CMD ["uv", "run", "gunicorn", "app.main:app", "-k", "uvicorn.workers.UvicornWorker", "-w", "4", "-b", "0.0.0.0:8000", "--access-logfile", "-", "--error-logfile", "-"]
+CMD ["sh", "-c", "uv run gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 4 -b 0.0.0.0:${APP_PORT:-8000} --access-logfile - --error-logfile -"]

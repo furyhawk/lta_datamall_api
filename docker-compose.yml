@@ -16,9 +16,9 @@ services:
     depends_on:
       - valkey
     ports:
-      - "8000:8000"
+      - "${APP_PORT:-8000}:${APP_PORT:-8000}"
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
+      test: ["CMD", "python", "-c", "import os, urllib.request; urllib.request.urlopen(f'http://localhost:{os.getenv(\"APP_PORT\", \"8000\")}/healthz', timeout=3)"]
       interval: 30s
       timeout: 5s
       retries: 3

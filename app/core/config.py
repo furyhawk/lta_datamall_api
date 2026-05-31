@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     app_debug: bool = False
     app_version: str = "0.1.0"
+    app_port: int = Field(8000, ge=1, le=65535)
 
     datamall_base_url: str = "https://datamall2.mytransport.sg/ltaodataservice"
     datamall_api_key: str = Field(..., description="LTA DataMall AccountKey")

@@ -8,6 +8,7 @@ FastAPI backend platform for LTA DataMall Bus Transport APIs, dockerized for pro
 - Valkey caching layer with graceful fallback when cache is unavailable
 - Scalable runtime with Gunicorn + Uvicorn workers
 - API key loaded from `.env` (`DATAMALL_API_KEY`)
+- Backend port configurable via `.env` (`APP_PORT`)
 - Bus Transport endpoints exposed under `/api/v1`
 - Container health endpoints: `/healthz`, `/readyz`
 
@@ -34,7 +35,7 @@ uv sync
 4. Start the app:
 
 ```bash
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uv run uvicorn app.main:app --host 0.0.0.0 --port ${APP_PORT:-8000} --reload
 ```
 
 ## Docker Run
@@ -49,7 +50,7 @@ docker compose up --build -d
 3. Check health:
 
 ```bash
-curl http://localhost:8000/healthz
+curl http://localhost:${APP_PORT:-8000}/healthz
 ```
 
 The compose stack includes a Valkey service for caching.
@@ -62,6 +63,7 @@ Set in `.env`:
 - `VALKEY_URL=redis://valkey:6379/0`
 - `VALKEY_CONNECT_TIMEOUT_SECONDS=1`
 - `VALKEY_DEFAULT_TTL_SECONDS=120`
+- `APP_PORT=8000`
 
 Current cache behavior:
 

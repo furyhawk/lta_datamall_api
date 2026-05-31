@@ -1,6 +1,9 @@
 APP_MODULE=app.main:app
 HOST=0.0.0.0
-PORT=8000
+
+-include .env
+
+APP_PORT ?= 8000
 
 PYTHON_RUN=uv run
 
@@ -51,12 +54,12 @@ sync:
 	uv sync
 
 run:
-	$(PYTHON_RUN) uvicorn $(APP_MODULE) --host $(HOST) --port $(PORT) --reload
+	$(PYTHON_RUN) uvicorn $(APP_MODULE) --host $(HOST) --port $(APP_PORT) --reload
 
 dev: run
 
 prod:
-	$(PYTHON_RUN) gunicorn $(APP_MODULE) -k uvicorn.workers.UvicornWorker -w 4 -b $(HOST):$(PORT) --access-logfile - --error-logfile -
+	$(PYTHON_RUN) gunicorn $(APP_MODULE) -k uvicorn.workers.UvicornWorker -w 4 -b $(HOST):$(APP_PORT) --access-logfile - --error-logfile -
 
 compile:
 	$(PYTHON_RUN) python -m compileall app
@@ -70,7 +73,7 @@ image-build: check-engine
 	$(CONTAINER_ENGINE) build -t lta-datamall-bus-backend:latest .
 
 image-run: check-engine
-	$(CONTAINER_ENGINE) run -d --name lta-datamall-bus-backend --env-file .env -p 8000:8000 lta-datamall-bus-backend:latest
+	$(CONTAINER_ENGINE) run -d --name lta-datamall-bus-backend --env-file .env -p $(APP_PORT):$(APP_PORT) lta-datamall-bus-backend:latest
 
 image-stop: check-engine
 	-$(CONTAINER_ENGINE) stop lta-datamall-bus-backend
