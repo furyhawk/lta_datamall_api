@@ -1,0 +1,669 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "LTA DataMall Bus Transport API",
+    "version": "6.8",
+    "description": "OpenAPI definition derived from LTA DataMall API User Guide v6.8 (21 Apr 2026). Scope is limited to Bus Transport related APIs."
+  },
+  "servers": [
+    {
+      "url": "https://datamall2.mytransport.sg/ltaodataservice",
+      "description": "LTA DataMall API base URL"
+    }
+  ],
+  "security": [
+    {
+      "AccountKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Bus Arrival"
+    },
+    {
+      "name": "Bus Services"
+    },
+    {
+      "name": "Bus Routes"
+    },
+    {
+      "name": "Bus Stops"
+    },
+    {
+      "name": "Passenger Volume"
+    },
+    {
+      "name": "Planned Bus Routes"
+    }
+  ],
+  "paths": {
+    "/v3/BusArrival": {
+      "get": {
+        "tags": [
+          "Bus Arrival"
+        ],
+        "summary": "Get real-time bus arrivals at a bus stop",
+        "description": "Returns real-time bus arrival information for services at a queried bus stop, including estimated arrival time, location and load.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "name": "BusStopCode",
+            "in": "query",
+            "required": true,
+            "description": "Bus stop reference code.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "83139"
+          },
+          {
+            "name": "ServiceNo",
+            "in": "query",
+            "required": false,
+            "description": "Bus service number to filter on.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "15"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusArrivalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/BusServices": {
+      "get": {
+        "tags": [
+          "Bus Services"
+        ],
+        "summary": "Get bus service metadata",
+        "description": "Returns detailed service information for buses currently in operation.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          },
+          {
+            "name": "ServiceNo",
+            "in": "query",
+            "required": false,
+            "description": "Bus service number.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "107M"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusServicesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/BusRoutes": {
+      "get": {
+        "tags": [
+          "Bus Routes"
+        ],
+        "summary": "Get bus route stop-by-stop details",
+        "description": "Returns route information for services currently in operation.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusRoutesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/BusStops": {
+      "get": {
+        "tags": [
+          "Bus Stops"
+        ],
+        "summary": "Get bus stop master data",
+        "description": "Returns details for bus stops being serviced by buses.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          },
+          {
+            "name": "BusStopCode",
+            "in": "query",
+            "required": false,
+            "description": "Unique 5-digit identifier for a physical bus stop.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "01012"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusStopsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PV/Bus": {
+      "get": {
+        "tags": [
+          "Passenger Volume"
+        ],
+        "summary": "Get passenger volume by bus stop",
+        "description": "Returns a downloadable file link for tap-in and tap-out passenger volume by bus stop.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "name": "Date",
+            "in": "query",
+            "required": false,
+            "description": "Request file month in YYYYMM format, up to last three months.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{6}$"
+            },
+            "example": "201803"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PassengerVolumeLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PV/ODBus": {
+      "get": {
+        "tags": [
+          "Passenger Volume"
+        ],
+        "summary": "Get passenger volume by origin-destination bus stops",
+        "description": "Returns a downloadable file link for number of trips from origin to destination bus stops.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "name": "Date",
+            "in": "query",
+            "required": false,
+            "description": "Request file month in YYYYMM format, up to last three months.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{6}$"
+            },
+            "example": "201804"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PassengerVolumeLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PlannedBusRoutes": {
+      "get": {
+        "tags": [
+          "Planned Bus Routes"
+        ],
+        "summary": "Get planned new or updated bus routes",
+        "description": "Returns planned new/updated bus route information. Data is released on or after the effective date.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedBusRoutesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AccountKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "AccountKey",
+        "description": "LTA DataMall AccountKey header"
+      }
+    },
+    "parameters": {
+      "AcceptHeader": {
+        "name": "accept",
+        "in": "header",
+        "required": false,
+        "description": "Optional response format. Default is JSON.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "application/json",
+            "application/atom+xml"
+          ],
+          "default": "application/json"
+        }
+      },
+      "Skip": {
+        "name": "$skip",
+        "in": "query",
+        "required": false,
+        "description": "Pagination offset in records for APIs that return large datasets.",
+        "schema": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "example": 500
+      }
+    },
+    "schemas": {
+      "BusArrivalResponse": {
+        "type": "object",
+        "properties": {
+          "odata.metadata": {
+            "type": "string",
+            "example": "https://datamall2.mytransport.sg/ltaodataservice/v3/BusArrival"
+          },
+          "BusStopCode": {
+            "type": "string",
+            "example": "83139"
+          },
+          "Services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusArrivalService"
+            }
+          }
+        }
+      },
+      "BusArrivalService": {
+        "type": "object",
+        "properties": {
+          "ServiceNo": {
+            "type": "string",
+            "example": "15"
+          },
+          "Operator": {
+            "type": "string",
+            "description": "Public transport operator code",
+            "example": "GAS"
+          },
+          "NextBus": {
+            "$ref": "#/components/schemas/BusArrivalBus"
+          },
+          "NextBus2": {
+            "$ref": "#/components/schemas/BusArrivalBus"
+          },
+          "NextBus3": {
+            "$ref": "#/components/schemas/BusArrivalBus"
+          }
+        }
+      },
+      "BusArrivalBus": {
+        "type": "object",
+        "properties": {
+          "OriginCode": {
+            "type": "string",
+            "example": "77009"
+          },
+          "DestinationCode": {
+            "type": "string",
+            "example": "77009"
+          },
+          "EstimatedArrival": {
+            "type": "string",
+            "description": "Estimated arrival time in ISO 8601 format with UTC offset.",
+            "example": "2024-08-14T16:41:48+08:00"
+          },
+          "Monitored": {
+            "type": "integer",
+            "description": "0 indicates schedule-based, 1 indicates location-estimated.",
+            "example": 1
+          },
+          "Latitude": {
+            "type": "string",
+            "example": "1.3154918333333334"
+          },
+          "Longitude": {
+            "type": "string",
+            "example": "103.9059125"
+          },
+          "VisitNumber": {
+            "type": "string",
+            "example": "1"
+          },
+          "Load": {
+            "type": "string",
+            "description": "SEA: Seats Available, SDA: Standing Available, LSD: Limited Standing.",
+            "example": "SEA"
+          },
+          "Feature": {
+            "type": "string",
+            "description": "WAB indicates wheelchair-accessible bus.",
+            "example": "WAB"
+          },
+          "Type": {
+            "type": "string",
+            "description": "Vehicle type: SD, DD, or BD.",
+            "example": "SD"
+          }
+        }
+      },
+      "BusServicesResponse": {
+        "$ref": "#/components/schemas/ODataBusServiceCollection"
+      },
+      "BusRoutesResponse": {
+        "$ref": "#/components/schemas/ODataBusRouteCollection"
+      },
+      "BusStopsResponse": {
+        "$ref": "#/components/schemas/ODataBusStopCollection"
+      },
+      "PlannedBusRoutesResponse": {
+        "$ref": "#/components/schemas/ODataPlannedBusRouteCollection"
+      },
+      "PassengerVolumeLinkResponse": {
+        "$ref": "#/components/schemas/ODataPassengerVolumeLinkCollection"
+      },
+      "ODataBusServiceCollection": {
+        "type": "object",
+        "properties": {
+          "odata.metadata": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusService"
+            }
+          }
+        }
+      },
+      "ODataBusRouteCollection": {
+        "type": "object",
+        "properties": {
+          "odata.metadata": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusRoute"
+            }
+          }
+        }
+      },
+      "ODataBusStopCollection": {
+        "type": "object",
+        "properties": {
+          "odata.metadata": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusStop"
+            }
+          }
+        }
+      },
+      "ODataPlannedBusRouteCollection": {
+        "type": "object",
+        "properties": {
+          "odata.metadata": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlannedBusRoute"
+            }
+          }
+        }
+      },
+      "ODataPassengerVolumeLinkCollection": {
+        "type": "object",
+        "properties": {
+          "odata.metadata": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PassengerVolumeLink"
+            }
+          }
+        }
+      },
+      "BusService": {
+        "type": "object",
+        "properties": {
+          "ServiceNo": {
+            "type": "string",
+            "example": "107M"
+          },
+          "Operator": {
+            "type": "string",
+            "example": "SBST"
+          },
+          "Direction": {
+            "type": "integer",
+            "example": 1
+          },
+          "Category": {
+            "type": "string",
+            "example": "TRUNK"
+          },
+          "OriginCode": {
+            "type": "string",
+            "example": "64009"
+          },
+          "DestinationCode": {
+            "type": "string",
+            "example": "64009"
+          },
+          "AM_Peak_Freq": {
+            "type": "string",
+            "example": "14-17"
+          },
+          "AM_Offpeak_Freq": {
+            "type": "string",
+            "example": "10-16"
+          },
+          "PM_Peak_Freq": {
+            "type": "string",
+            "example": "12-15"
+          },
+          "PM_Offpeak_Freq": {
+            "type": "string",
+            "example": "12-15"
+          },
+          "LoopDesc": {
+            "type": "string",
+            "example": "Raffles Blvd"
+          }
+        }
+      },
+      "BusRoute": {
+        "type": "object",
+        "properties": {
+          "ServiceNo": {
+            "type": "string",
+            "example": "107M"
+          },
+          "Operator": {
+            "type": "string",
+            "example": "SBST"
+          },
+          "Direction": {
+            "type": "integer",
+            "example": 1
+          },
+          "StopSequence": {
+            "type": "integer",
+            "example": 28
+          },
+          "BusStopCode": {
+            "type": "string",
+            "example": "01219"
+          },
+          "Distance": {
+            "type": "number",
+            "format": "float",
+            "example": 10.3
+          },
+          "WD_FirstBus": {
+            "type": "string",
+            "example": "2025"
+          },
+          "WD_LastBus": {
+            "type": "string",
+            "example": "2352"
+          },
+          "SAT_FirstBus": {
+            "type": "string",
+            "example": "1427"
+          },
+          "SAT_LastBus": {
+            "type": "string",
+            "example": "2349"
+          },
+          "SUN_FirstBus": {
+            "type": "string",
+            "example": "0620"
+          },
+          "SUN_LastBus": {
+            "type": "string",
+            "example": "2349"
+          }
+        }
+      },
+      "PlannedBusRoute": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BusRoute"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "EffectiveDate": {
+                "type": "string",
+                "example": "20250302T00:00:00+0800"
+              }
+            }
+          }
+        ]
+      },
+      "BusStop": {
+        "type": "object",
+        "properties": {
+          "BusStopCode": {
+            "type": "string",
+            "example": "01012"
+          },
+          "RoadName": {
+            "type": "string",
+            "example": "Victoria St"
+          },
+          "Description": {
+            "type": "string",
+            "example": "Hotel Grand Pacific"
+          },
+          "Latitude": {
+            "type": "number",
+            "format": "double",
+            "example": 1.29685
+          },
+          "Longitude": {
+            "type": "number",
+            "format": "double",
+            "example": 103.853
+          }
+        }
+      },
+      "PassengerVolumeLink": {
+        "type": "object",
+        "properties": {
+          "Link": {
+            "type": "string",
+            "format": "uri",
+            "description": "Pre-signed download URL that expires (typically within 5 minutes)."
+          }
+        }
+      }
+    }
+  }
+}
