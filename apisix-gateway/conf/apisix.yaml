@@ -1,0 +1,32 @@
+routes:
+  - id: 1
+    uri: /healthz
+    upstream_id: 1
+
+  - id: 2
+    uri: /readyz
+    upstream_id: 1
+
+  - id: 3
+    uri: /openapi.json
+    upstream_id: 1
+
+  - id: 4
+    uri: /docs
+    upstream_id: 1
+
+  - id: 5
+    uri: /redoc
+    upstream_id: 1
+
+  - id: 6
+    uri: /api/v1/*
+    upstream_id: 1
+
+upstreams:
+  - id: 1
+    type: roundrobin
+    nodes:
+      "host.containers.internal:8068": 1
+
+#END

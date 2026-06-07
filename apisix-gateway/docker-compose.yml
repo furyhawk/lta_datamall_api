@@ -1,0 +1,12 @@
+services:
+  apisix:
+    image: apache/apisix:3.11.0-debian
+    container_name: lta-datamall-apisix
+    volumes:
+      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      - ./conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
+    ports:
+      - "9080:9080"
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:10.0.2.2"  # Standard podman default gateway
