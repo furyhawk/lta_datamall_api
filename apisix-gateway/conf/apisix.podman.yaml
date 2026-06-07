@@ -1,3 +1,4 @@
+# Reference only: the dashboard-enabled stack now seeds routes via the Admin API.
 routes:
   - id: 1
     uri: /healthz

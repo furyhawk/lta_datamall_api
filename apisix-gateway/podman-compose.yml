@@ -1,10 +1,48 @@
 services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.14
+    container_name: lta-datamall-etcd
+    command:
+      - /usr/local/bin/etcd
+      - --name=etcd
+      - --advertise-client-urls=http://etcd:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+    restart: unless-stopped
+
   apisix:
     image: apache/apisix:3.11.0-debian
     container_name: lta-datamall-apisix
+    depends_on:
+      - etcd
     volumes:
       - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
-      - ./conf/apisix.podman.yaml:/usr/local/apisix/conf/apisix.yaml:ro
     ports:
       - "9080:9080"
+      - "9180:9180"
     restart: unless-stopped
+
+  apisix-dashboard:
+    image: apache/apisix-dashboard:3.0.1-alpine
+    container_name: lta-datamall-apisix-dashboard
+    depends_on:
+      - etcd
+    volumes:
+      - ./conf/dashboard.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+
+  apisix-bootstrap:
+    image: curlimages/curl:8.8.0
+    container_name: lta-datamall-apisix-bootstrap
+    depends_on:
+      - apisix
+    environment:
+      APISIX_ADMIN_URL: http://apisix:9180
+      APISIX_ADMIN_KEY: apisix-dev-admin-key
+      BACKEND_HOST: host.containers.internal
+      BACKEND_PORT: "8068"
+    volumes:
+      - ./scripts/bootstrap-routes.sh:/bootstrap-routes.sh:ro
+    entrypoint: ["sh", "/bootstrap-routes.sh"]
+    restart: "no"

@@ -6,6 +6,7 @@ This project runs Apache APISIX as an API gateway in front of the LTA DataMall F
 
 - Proxies `/api/v1/*` to the backend service
 - Forwards backend health and docs endpoints through the gateway
+- Exposes Apache APISIX Dashboard for route inspection and editing
 - Keeps gateway configuration isolated from the API service project
 
 ## Prerequisites
@@ -18,7 +19,7 @@ Podman uses `host.containers.internal`.
 
 This project keeps separate compose wiring for each runtime and the gateway `Makefile` selects the right file automatically.
 
-If your backend runs on a different host or port, update the upstream target in [conf/apisix.yaml](conf/apisix.yaml) for Docker or [conf/apisix.podman.yaml](conf/apisix.podman.yaml) for Podman.
+If your backend runs on a different host or port, update `BACKEND_HOST` and `BACKEND_PORT` in the selected compose file.
 
 ## Run
 
@@ -29,7 +30,18 @@ If your backend runs on a different host or port, update the upstream target in 
 make up
 ```
 
-3. Send requests through APISIX:
+3. Open the dashboard:
+
+```bash
+open http://localhost:9000
+```
+
+Dashboard default login:
+
+- Username: `admin`
+- Password: `admin`
+
+4. Send requests through APISIX:
 
 ```bash
 curl "http://localhost:9080/api/v1/bus-arrival?BusStopCode=83139&ServiceNo=3&Date=2025-01-01"
@@ -49,3 +61,13 @@ make ps
 ## Ports
 
 - `9080` - APISIX proxy listener
+- `9180` - APISIX Admin API
+- `9000` - APISIX Dashboard
+
+## Notes
+
+- This stack uses APISIX traditional mode with etcd so the dashboard can manage routes.
+- The initial upstream and routes are seeded automatically by `scripts/bootstrap-routes.sh` when the stack starts.
+- `conf/apisix.yaml` and `conf/apisix.podman.yaml` are kept only as standalone-mode references and are not loaded by the dashboard-enabled stack.
+- Change the default dashboard login and the Admin API key before using this outside local development.
+

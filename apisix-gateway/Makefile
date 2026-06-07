@@ -8,10 +8,10 @@ COMPOSE_FILE:=$(if $(filter podman,$(CONTAINER_ENGINE)),podman-compose.yml,docke
 
 help:
 	@echo "Targets:"
-	@echo "  up     Start APISIX gateway"
-	@echo "  down   Stop APISIX gateway"
-	@echo "  logs   Follow APISIX logs"
-	@echo "  ps     Show gateway containers"
+	@echo "  up     Start APISIX, etcd, dashboard, and route bootstrap"
+	@echo "  down   Stop the full gateway stack"
+	@echo "  logs   Follow gateway stack logs"
+	@echo "  ps     Show gateway stack containers"
 	@echo ""
 	@echo "Detected container engine: $(if $(CONTAINER_ENGINE),$(CONTAINER_ENGINE),none)"
 	@echo "Detected compose command: $(if $(COMPOSE_CMD),$(COMPOSE_CMD),none)"
