@@ -27,6 +27,6 @@ upstreams:
   - id: 1
     type: roundrobin
     nodes:
-      "host.docker.internal:8068": 1
+      "host.containers.internal:8068": 1
 
 #END

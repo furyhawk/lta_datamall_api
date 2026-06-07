@@ -13,7 +13,12 @@ This project runs Apache APISIX as an API gateway in front of the LTA DataMall F
 - Docker or Podman with compose support
 - The backend service running on `http://host.docker.internal:8068` on macOS
 
-If your backend runs on a different host or port, update the upstream target in [conf/apisix.yaml](conf/apisix.yaml).
+Docker uses `host.docker.internal`.
+Podman uses `host.containers.internal`.
+
+This project keeps separate compose wiring for each runtime and the gateway `Makefile` selects the right file automatically.
+
+If your backend runs on a different host or port, update the upstream target in [conf/apisix.yaml](conf/apisix.yaml) for Docker or [conf/apisix.podman.yaml](conf/apisix.podman.yaml) for Podman.
 
 ## Run
 
@@ -38,6 +43,8 @@ make down
 make logs
 make ps
 ```
+
+`make up`, `make down`, `make logs`, and `make ps` automatically choose `docker-compose.yml` for Docker and `podman-compose.yml` for Podman.
 
 ## Ports
 

@@ -4,7 +4,7 @@ services:
     container_name: lta-datamall-apisix
     volumes:
       - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
-      - ./conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
+      - ./conf/apisix.podman.yaml:/usr/local/apisix/conf/apisix.yaml:ro
     ports:
       - "9080:9080"
     restart: unless-stopped

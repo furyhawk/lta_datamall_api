@@ -1,4 +1,6 @@
+CONTAINER_ENGINE:=$(shell if command -v podman >/dev/null 2>&1; then echo podman; elif command -v docker >/dev/null 2>&1; then echo docker; else echo ""; fi)
 COMPOSE_CMD:=$(shell if command -v podman >/dev/null 2>&1; then if podman compose version >/dev/null 2>&1; then echo "podman compose"; elif command -v podman-compose >/dev/null 2>&1; then echo podman-compose; fi; elif command -v docker >/dev/null 2>&1; then echo "docker compose"; else echo ""; fi)
+COMPOSE_FILE:=$(if $(filter podman,$(CONTAINER_ENGINE)),podman-compose.yml,docker-compose.yml)
 
 .DEFAULT_GOAL := help
 
@@ -11,7 +13,9 @@ help:
 	@echo "  logs   Follow APISIX logs"
 	@echo "  ps     Show gateway containers"
 	@echo ""
+	@echo "Detected container engine: $(if $(CONTAINER_ENGINE),$(CONTAINER_ENGINE),none)"
 	@echo "Detected compose command: $(if $(COMPOSE_CMD),$(COMPOSE_CMD),none)"
+	@echo "Selected compose file: $(COMPOSE_FILE)"
 
 check-compose:
 	@if [ -z "$(COMPOSE_CMD)" ]; then \
@@ -20,13 +24,13 @@ check-compose:
 	fi
 
 up: check-compose
-	$(COMPOSE_CMD) up --build -d
+	$(COMPOSE_CMD) -f $(COMPOSE_FILE) up --build -d
 
 down: check-compose
-	$(COMPOSE_CMD) down
+	$(COMPOSE_CMD) -f $(COMPOSE_FILE) down
 
 logs: check-compose
-	$(COMPOSE_CMD) logs -f
+	$(COMPOSE_CMD) -f $(COMPOSE_FILE) logs -f
 
 ps: check-compose
-	$(COMPOSE_CMD) ps
+	$(COMPOSE_CMD) -f $(COMPOSE_FILE) ps
