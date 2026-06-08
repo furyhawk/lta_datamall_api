@@ -33,7 +33,7 @@ make up
 3. Open the dashboard:
 
 ```bash
-open http://localhost:9000
+open http://localhost:9099
 ```
 
 Dashboard default login:
@@ -62,7 +62,7 @@ make ps
 
 - `9080` - APISIX proxy listener
 - `9180` - APISIX Admin API
-- `9000` - APISIX Dashboard
+- `9099` - APISIX Dashboard
 
 ## Notes
 

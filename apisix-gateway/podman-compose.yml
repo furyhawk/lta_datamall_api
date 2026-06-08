@@ -29,7 +29,7 @@ services:
     volumes:
       - ./conf/dashboard.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
     ports:
-      - "9000:9000"
+      - "9099:9000"
     restart: unless-stopped
 
   apisix-bootstrap:
